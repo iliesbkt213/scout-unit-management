@@ -1,103 +1,103 @@
-# Scout Unit Management
+# Gestion d'unité scoute
 
-Project for course **Programmation orientée objet avancée** - Bloc 2 - Hénallux.
+Projet pour le cours de **Programmation orientée objet avancée** — Bloc 2 — Hénallux.
 
-Authors: Renilde de Smedt and Ilies Boukhatem.
+Auteurs : Renilde de Smedt et Ilies Boukhatem.
 
-## Domain
+## Domaine d'application
 
-The application supports the management of a scout unit (informatisation
-de la gestion d'une unité scoute). The CRUD table is `Inscription`,
-which links a person playing a role to a unit, an invitation to pay
-and (optionally) a legal guardian.
+L'application permet d'informatiser la gestion d'une unité scoute de la
+Fédération des Scouts Baden-Powell. La table CRUD est `Inscription`,
+qui lie une personne jouant un rôle à une unité, une invitation à payer
+et (facultativement) un tuteur légal.
 
 ## Architecture
 
-The project follows the MVC + 3-tier architecture seen in the course:
+Le projet suit l'architecture MVC + 3-tiers vue dans le cours :
 
 ```
-viewPackage         → Swing UI (JFrame, JPanel, JTable, JComboBox, JSpinner)
-controllerPackage   → Application controller (delegates to business layer)
-businessPackage     → Business managers (validations, business task)
-dataAccessPackage   → Singleton connection + DAO interfaces and implementations
-modelPackage        → POJO model classes with validation in setters
-exceptionPackage    → Custom exceptions, one per operation
+viewPackage         → Interface Swing (JFrame, JPanel, JTable, JComboBox, JSpinner)
+controllerPackage   → Contrôleur applicatif (délègue à la couche métier)
+businessPackage     → Gestionnaires métier (validations, tâche métier)
+dataAccessPackage   → Connexion Singleton + interfaces DAO et implémentations
+modelPackage        → Classes POJO avec validation dans les setters
+exceptionPackage    → Exceptions personnalisées, une par opération
 ```
 
-## Database
+## Base de données
 
-* Database name: `scout_unit`
-* MySQL with password (configure `USER` and `PASSWORD` in
+* Nom de la base : `scout_unit`
+* MySQL avec mot de passe (configurer `USER` et `PASSWORD` dans
   `dataAccessPackage/SingletonConnection.java`).
-* SQL scripts are in `sql/`:
-  * `01_create_database.sql` — creates the schema with `CHECK`,
-    `UNIQUE` and foreign-key constraints.
-  * `02_fill_database.sql` — inserts sample data so the program can be
-    demonstrated immediately.
+* Les scripts SQL sont dans `sql/` :
+  * `01_create_database.sql` — crée le schéma avec contraintes `CHECK`,
+    `UNIQUE` et clés étrangères.
+  * `02_fill_database.sql` — insère des données d'exemple pour pouvoir
+    démontrer le programme immédiatement.
 
-## Running
+## Lancement
 
-### With Maven
+### Avec Maven
 
 ```
 mvn clean compile exec:java -Dexec.mainClass="viewPackage.Main"
 mvn test
 ```
 
-### With IntelliJ
+### Avec IntelliJ
 
-1. Open the `ScoutUnitManagement` folder.
-2. Mark `src/main/java` as Sources Root and `src/test/java` as Test
-   Sources Root.
-3. Add MySQL Connector/J and JUnit 5 to the project libraries.
-4. Run `viewPackage.Main`.
+1. Ouvrir le dossier `ScoutUnitManagement`.
+2. Marquer `src/main/java` comme Sources Root et `src/test/java`
+   comme Test Sources Root.
+3. Ajouter MySQL Connector/J et JUnit 5 aux bibliothèques du projet.
+4. Lancer `viewPackage.Main`.
 
-## Features
+## Fonctionnalités
 
-* **Welcome window** with menu bar (Home / Inscriptions / Searches /
-  Tools / Help) and an animated scout-themed panel running on a
-  separate thread (`ScoutAnimationPanel`).
-* **CRUD on `Inscription`** (text, numeric/FK, date, boolean,
-  optional legal guardian) with combo-boxes for foreign keys and
-  double validation (View + Business + Model setters).
-* **Three searches with multi-table joins** (each crosses at least
-  three tables, one uses a `JSpinner` date):
-  1. By unit name and registration-date period (date filter).
-  2. By role and city (string filter, joins on Role/Person/Address/City).
-  3. By status and registration date (date filter).
-* **JTable** results showing columns coming from at least three
-  different tables (person + role + unit + city + amount).
-* **Business task** computed in `InscriptionManager` and displayed
-  via `BusinessTaskPanel` (total revenue, confirmation rate, count
-  of incomplete inscriptions, count of confirmed inscriptions in a
-  period).
-* **Additional thread** : `ScoutAnimationPanel` paints a small scout
-  scene (waving flag, flickering campfire, tent) on a daemon thread.
-  It does not access the database.
-* **JUnit tests** on the model setters and on the business manager
-  (using a fake DAO so tests do not hit the database).
-* **Custom exceptions** per operation, no `SQLException` propagated
-  to upper layers, no name `BDException`.
-* **Singleton connection** + **PreparedStatement** everywhere (no
-  string concatenation in queries → no SQL injection).
-* **English names** for classes, variables, methods, tables and
-  columns.
+* **Fenêtre d'accueil** avec barre de menus (Accueil / Inscriptions /
+  Recherches / Outils / Aide) et un panneau d'animation scout sur un
+  thread séparé (`ScoutAnimationPanel`).
+* **CRUD sur `Inscription`** (texte, numérique/FK, date, booléen,
+  tuteur légal facultatif) avec combo-boxes pour les clés étrangères
+  et double validation (Vue + Métier + setters Modèle).
+* **Trois recherches avec jointures multi-tables** (chacune utilise au
+  moins trois tables, une utilise une date via `JSpinner`) :
+  1. Par nom d'unité et période d'inscription (filtre date).
+  2. Par rôle et ville (filtre texte, joint Role/Person/Address/City).
+  3. Par statut et date d'inscription (filtre date).
+* **JTable** affichant des colonnes provenant d'au moins trois tables
+  différentes (personne + rôle + unité + ville + montant).
+* **Tâche métier** calculée dans `InscriptionManager` et affichée
+  via `BusinessTaskPanel` (recettes totales, taux de confirmation,
+  nombre d'inscriptions incomplètes, nombre d'inscriptions confirmées
+  sur une période).
+* **Thread supplémentaire** : `ScoutAnimationPanel` peint une petite
+  scène scoute (drapeau qui flotte, feu de camp qui vacille, tente)
+  sur un thread daemon. Il n'accède pas à la base de données.
+* **Tests JUnit** sur les setters du modèle et sur le gestionnaire
+  métier (avec un faux DAO pour que les tests ne touchent pas la BD).
+* **Exceptions personnalisées** par opération, aucune `SQLException`
+  ne remonte aux couches supérieures, aucun nom de type `BDException`.
+* **Connexion Singleton** + **PreparedStatement** partout (pas de
+  concaténation de chaînes dans les requêtes → pas d'injection SQL).
+* **Noms anglais** pour les classes, variables, méthodes, tables et
+  colonnes ; **interface utilisateur en français**.
 
-## Constraints checklist
+## Liste des contraintes
 
-| Constraint | Where |
+| Contrainte | Emplacement |
 |---|---|
-| Welcome window with menus | `viewPackage/MainFrame.java` |
-| CRUD with text/numeric/date/boolean/optional/FK | `Inscription` (model + add/update panels) |
-| 3 searches with 3+ tables, one with date | `InscriptionDBAccess` search methods + view panels |
-| JTable with cross-table columns | `InscriptionListPanel`, search panels |
-| Business task in business layer | `InscriptionManager.computeTotalRevenueFromConfirmedInscriptions`, `computeConfirmationRate`, `countIncompleteInscriptions` |
-| Additional thread (not clock, not DB) | `ScoutAnimationPanel` |
-| JUnit tests on filters | `InscriptionTest`, `PersonTest`, `InvitationToPayTest`, `InscriptionManagerTest` |
-| MySQL with password | `SingletonConnection` constants |
-| 6+ tables, FK + constraints | `01_create_database.sql` (8 tables) |
+| Fenêtre d'accueil avec menus | `viewPackage/MainFrame.java` |
+| CRUD avec texte/numérique/date/booléen/facultatif/FK | `Inscription` (modèle + panneaux ajout/modification) |
+| 3 recherches avec 3+ tables, une avec date | méthodes de recherche dans `InscriptionDBAccess` + panneaux vue |
+| JTable avec colonnes inter-tables | `InscriptionListPanel`, panneaux de recherche |
+| Tâche métier dans la couche métier | `InscriptionManager.computeTotalRevenueFromConfirmedInscriptions`, `computeConfirmationRate`, `countIncompleteInscriptions` |
+| Thread supplémentaire (ni horloge, ni BD) | `ScoutAnimationPanel` |
+| Tests JUnit sur les filtres | `InscriptionTest`, `PersonTest`, `InvitationToPayTest`, `InscriptionManagerTest` |
+| MySQL avec mot de passe | constantes dans `SingletonConnection` |
+| 6+ tables, FK + contraintes | `01_create_database.sql` (8 tables) |
 | Singleton + PreparedStatement | `SingletonConnection`, `InscriptionDBAccess`, `ReferenceDBAccess` |
-| DAO pattern with interfaces | `InscriptionDataAccess`, `ReferenceDataAccess` and DB implementations |
-| Custom exceptions, no `SQLException`, no `BDException` | `exceptionPackage` |
-| English everywhere | code + DB |
-| No console / dialog output outside View | only `JOptionPane` calls in `viewPackage` |
+| Pattern DAO avec interfaces | `InscriptionDataAccess`, `ReferenceDataAccess` et leurs implémentations BD |
+| Exceptions personnalisées, pas de `SQLException`, pas de `BDException` | `exceptionPackage` |
+| Anglais dans le code et la BD | code + BD |
+| Pas de sortie console / dialogue hors couche Vue | uniquement appels `JOptionPane` dans `viewPackage` |
