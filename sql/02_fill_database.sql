@@ -19,17 +19,17 @@ INSERT INTO Address (AddressId, CityId, Street, Number) VALUES
     (3, 3, 'Avenue Louise', '120'),
     (4, 4, 'Rue de la Montagne', '3B'),
     (5, 5, 'Grand Place', '8'),
-    (6, 1, 'Rue de l Ange', '22'),
-    (7, 2, 'Boulevard de la Sauveniere', '14'),
+    (6, 1, 'Rue de l''Ange', '22'),
+    (7, 2, 'Boulevard de la Sauvenière', '14'),
     (8, 3, 'Rue Royale', '76'),
-    (9, 1, 'Chaussee de Louvain', '210'),
+    (9, 1, 'Chaussée de Louvain', '210'),
     (10, 2, 'Rue Saint-Lambert', '9');
 
 -- Person
 INSERT INTO Person (PersonId, AddressId, FirstName, LastName, Gender, BirthDate, Email, Phone) VALUES
     (1, 1, 'Renilde', 'de Smedt', 'F', '2005-04-12', 'renilde.desmedt@example.be', '+32 81 23 45 67'),
     (2, 2, 'Ilies', 'Boukhatem', 'M', '2005-09-23', 'ilies.boukhatem@example.be', '+32 4 22 33 44'),
-    (3, 3, 'Camille', 'Lefevre', 'F', '2014-03-05', 'camille.lefevre@example.be', '+32 2 555 12 34'),
+    (3, 3, 'Camille', 'Lefèvre', 'F', '2014-03-05', 'camille.lefevre@example.be', '+32 2 555 12 34'),
     (4, 4, 'Lucas', 'Martin', 'M', '2013-11-18', 'lucas.martin@example.be', '+32 71 12 34 56'),
     (5, 5, 'Emma', 'Dubois', 'F', '2012-07-30', 'emma.dubois@example.be', '+32 65 33 44 55'),
     (6, 6, 'Hugo', 'Bernard', 'M', '2010-01-14', 'hugo.bernard@example.be', '+32 81 88 77 66'),
@@ -43,8 +43,8 @@ INSERT INTO Role (Label) VALUES
     ('SCOUT'),
     ('CHEF'),
     ('RESPONSABLE'),
-    ('SECRETAIRE'),
-    ('TRESORIER');
+    ('SECRÉTAIRE'),
+    ('TRÉSORIER');
 
 -- PersonRole
 INSERT INTO PersonRole (Identifier, PersonId, RoleLabel, StartDate, EndDate) VALUES
@@ -56,8 +56,8 @@ INSERT INTO PersonRole (Identifier, PersonId, RoleLabel, StartDate, EndDate) VAL
     (6, 6, 'SCOUT', '2024-10-15', NULL),
     (7, 7, 'SCOUT', '2024-09-01', NULL),
     (8, 8, 'SCOUT', '2025-01-15', NULL),
-    (9, 9, 'TRESORIER', '2024-08-01', NULL),
-    (10, 10, 'SECRETAIRE', '2024-08-01', NULL);
+    (9, 9, 'TRÉSORIER', '2024-08-01', NULL),
+    (10, 10, 'SECRÉTAIRE', '2024-08-01', NULL);
 
 -- UnitScout
 INSERT INTO UnitScout (Identifier, ResponsibleId, UnitName) VALUES
