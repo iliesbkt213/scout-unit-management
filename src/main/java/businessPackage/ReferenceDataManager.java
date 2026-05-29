@@ -11,7 +11,7 @@ import modelPackage.UnitScout;
 
 import java.util.List;
 
-public class ReferenceDataManager {
+public class ReferenceDataManager implements ReferenceDataBusiness {
 
     private ReferenceDataAccess dao;
 

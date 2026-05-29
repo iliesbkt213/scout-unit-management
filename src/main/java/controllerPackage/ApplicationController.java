@@ -1,6 +1,8 @@
 package controllerPackage;
 
+import businessPackage.InscriptionBusiness;
 import businessPackage.InscriptionManager;
+import businessPackage.ReferenceDataBusiness;
 import businessPackage.ReferenceDataManager;
 import exceptionPackage.AddInscriptionException;
 import exceptionPackage.AllInscriptionsException;
@@ -25,30 +27,30 @@ import java.util.List;
 
 public class ApplicationController {
 
-    private InscriptionManager inscriptionManager;
-    private ReferenceDataManager referenceDataManager;
+    private InscriptionBusiness inscriptionManager;
+    private ReferenceDataBusiness referenceDataManager;
 
     public ApplicationController() {
         setInscriptionManager(new InscriptionManager());
         setReferenceDataManager(new ReferenceDataManager());
     }
 
-    public InscriptionManager getInscriptionManager() {
+    public InscriptionBusiness getInscriptionManager() {
         return inscriptionManager;
     }
 
-    public void setInscriptionManager(InscriptionManager inscriptionManager) {
+    public void setInscriptionManager(InscriptionBusiness inscriptionManager) {
         if (inscriptionManager == null) {
             throw new IllegalArgumentException("Le gestionnaire d'inscriptions ne peut pas être nul.");
         }
         this.inscriptionManager = inscriptionManager;
     }
 
-    public ReferenceDataManager getReferenceDataManager() {
+    public ReferenceDataBusiness getReferenceDataManager() {
         return referenceDataManager;
     }
 
-    public void setReferenceDataManager(ReferenceDataManager referenceDataManager) {
+    public void setReferenceDataManager(ReferenceDataBusiness referenceDataManager) {
         if (referenceDataManager == null) {
             throw new IllegalArgumentException("Le gestionnaire de données de référence ne peut pas être nul.");
         }
