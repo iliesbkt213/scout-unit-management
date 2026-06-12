@@ -3,6 +3,7 @@ package viewPackage;
 import controllerPackage.ApplicationController;
 import exceptionPackage.LoadReferenceDataException;
 import modelPackage.Address;
+import modelPackage.City;
 import modelPackage.Person;
 import modelPackage.PersonRole;
 import modelPackage.Role;
@@ -38,7 +39,9 @@ public class NewPersonDialog extends JDialog {
     private JSpinner birthDateSpinner;
     private JTextField emailField;
     private JTextField phoneField;
-    private JComboBox<Address> addressCombo;
+    private JTextField streetField;
+    private JTextField numberField;
+    private JComboBox<City> cityCombo;
     private JComboBox<Role> roleCombo;
     private boolean created;
     private Integer createdPersonRoleId;
@@ -57,7 +60,7 @@ public class NewPersonDialog extends JDialog {
         buildFooter();
         loadReferenceData();
         pack();
-        setMinimumSize(new Dimension(520, 420));
+        setMinimumSize(new Dimension(560, 480));
         setLocationRelativeTo(owner);
     }
 
@@ -70,7 +73,8 @@ public class NewPersonDialog extends JDialog {
     }
 
     private void buildHeader() {
-        JLabel title = new JLabel("Créer une nouvelle personne et son rôle", SwingConstants.CENTER);
+        JLabel title = new JLabel("Créer une nouvelle personne et son rôle",
+                SwingConstants.CENTER);
         title.setFont(new Font("SansSerif", Font.BOLD, 16));
         add(title, BorderLayout.NORTH);
     }
@@ -105,8 +109,14 @@ public class NewPersonDialog extends JDialog {
         phoneField = new JTextField(20);
         addRow(form, c, row++, "Téléphone :", phoneField);
 
-        addressCombo = new JComboBox<>();
-        addRow(form, c, row++, "Adresse :", addressCombo);
+        streetField = new JTextField(20);
+        addRow(form, c, row++, "Rue :", streetField);
+
+        numberField = new JTextField(10);
+        addRow(form, c, row++, "Numéro :", numberField);
+
+        cityCombo = new JComboBox<>();
+        addRow(form, c, row++, "Ville :", cityCombo);
 
         roleCombo = new JComboBox<>();
         addRow(form, c, row++, "Rôle :", roleCombo);
@@ -138,9 +148,9 @@ public class NewPersonDialog extends JDialog {
 
     private void loadReferenceData() {
         try {
-            addressCombo.removeAllItems();
-            for (Address address : loadAddresses()) {
-                addressCombo.addItem(address);
+            cityCombo.removeAllItems();
+            for (City city : controller.getAllCities()) {
+                cityCombo.addItem(city);
             }
             roleCombo.removeAllItems();
             for (Role role : controller.getAllRoles()) {
@@ -152,25 +162,6 @@ public class NewPersonDialog extends JDialog {
         }
     }
 
-    private List<Address> loadAddresses() throws LoadReferenceDataException {
-        // On reconstruit la liste d'adresses depuis les personnes existantes
-        // pour éviter d'ajouter une méthode supplémentaire au DAO.
-        List<Address> addresses = new ArrayList<>();
-        List<Integer> seenIds = new ArrayList<>();
-        for (Person p : controller.getAllPersons()) {
-            if (p.getAddressId() != null && !seenIds.contains(p.getAddressId())) {
-                Address a = new Address();
-                a.setAddressId(p.getAddressId());
-                a.setCityId(1);
-                a.setStreet("Adresse #" + p.getAddressId());
-                a.setNumber("-");
-                addresses.add(a);
-                seenIds.add(p.getAddressId());
-            }
-        }
-        return addresses;
-    }
-
     private void handleCreate() {
         List<String> errors = new ArrayList<>();
         String firstName = firstNameField.getText().trim();
@@ -178,7 +169,9 @@ public class NewPersonDialog extends JDialog {
         String gender = (String) genderCombo.getSelectedItem();
         String email = emailField.getText().trim();
         String phone = phoneField.getText().trim();
-        Address selectedAddress = (Address) addressCombo.getSelectedItem();
+        String street = streetField.getText().trim();
+        String number = numberField.getText().trim();
+        City selectedCity = (City) cityCombo.getSelectedItem();
         Role selectedRole = (Role) roleCombo.getSelectedItem();
         java.util.Date utilBirth = (java.util.Date) birthDateSpinner.getValue();
 
@@ -186,7 +179,9 @@ public class NewPersonDialog extends JDialog {
         if (lastName.isEmpty()) errors.add("- Le nom est obligatoire.");
         if (email.isEmpty()) errors.add("- L'email est obligatoire.");
         if (phone.isEmpty()) errors.add("- Le téléphone est obligatoire.");
-        if (selectedAddress == null) errors.add("- Une adresse doit être sélectionnée.");
+        if (street.isEmpty()) errors.add("- La rue est obligatoire.");
+        if (number.isEmpty()) errors.add("- Le numéro est obligatoire.");
+        if (selectedCity == null) errors.add("- Une ville doit être sélectionnée.");
         if (selectedRole == null) errors.add("- Un rôle doit être sélectionné.");
         if (utilBirth == null) errors.add("- La date de naissance est obligatoire.");
 
@@ -197,15 +192,20 @@ public class NewPersonDialog extends JDialog {
         }
 
         try {
+            Address address = new Address();
+            address.setCityId(selectedCity.getCityId());
+            address.setStreet(street);
+            address.setNumber(number);
+            int newAddressId = controller.addAddress(address);
+
             Person person = new Person();
-            person.setAddressId(selectedAddress.getAddressId());
+            person.setAddressId(newAddressId);
             person.setFirstName(firstName);
             person.setLastName(lastName);
             person.setGender(gender);
             person.setBirthDate(toSqlDate(utilBirth));
             person.setEmail(email);
             person.setPhone(phone);
-
             int newPersonId = controller.addPerson(person);
 
             PersonRole personRole = new PersonRole();
@@ -217,7 +217,6 @@ public class NewPersonDialog extends JDialog {
             today.set(Calendar.SECOND, 0);
             today.set(Calendar.MILLISECOND, 0);
             personRole.setStartDate(new Date(today.getTimeInMillis()));
-
             int newPersonRoleId = controller.addPersonRole(personRole);
 
             createdPersonRoleId = newPersonRoleId;

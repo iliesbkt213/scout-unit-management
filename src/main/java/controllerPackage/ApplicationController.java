@@ -12,6 +12,8 @@ import exceptionPackage.InscriptionNotFoundException;
 import exceptionPackage.LoadReferenceDataException;
 import exceptionPackage.SearchInscriptionException;
 import exceptionPackage.UpdateInscriptionException;
+import modelPackage.Address;
+import modelPackage.City;
 import modelPackage.Inscription;
 import modelPackage.InscriptionDetail;
 import modelPackage.InscriptionSearchCriteria;
@@ -145,5 +147,17 @@ public class ApplicationController {
 
     public int addPersonRole(PersonRole personRole) throws LoadReferenceDataException {
         return referenceDataManager.addPersonRole(personRole);
+    }
+
+    public List<Address> getAllAddresses() throws LoadReferenceDataException {
+        return referenceDataManager.getAllAddresses();
+    }
+
+    public int addAddress(Address address) throws LoadReferenceDataException {
+        return referenceDataManager.addAddress(address);
+    }
+
+    public List<City> getAllCities() throws LoadReferenceDataException {
+        return referenceDataManager.getAllCities();
     }
 }

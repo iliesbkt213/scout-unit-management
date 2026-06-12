@@ -1,6 +1,8 @@
 package dataAccessPackage;
 
 import exceptionPackage.LoadReferenceDataException;
+import modelPackage.Address;
+import modelPackage.City;
 import modelPackage.InvitationToPay;
 import modelPackage.Person;
 import modelPackage.PersonRole;
@@ -26,4 +28,10 @@ public interface ReferenceDataAccess {
     int addPerson(Person person) throws LoadReferenceDataException;
 
     int addPersonRole(PersonRole personRole) throws LoadReferenceDataException;
+
+    List<Address> getAllAddresses() throws LoadReferenceDataException;
+
+    int addAddress(Address address) throws LoadReferenceDataException;
+
+    List<City> getAllCities() throws LoadReferenceDataException;
 }

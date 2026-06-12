@@ -2,6 +2,8 @@ package dataAccessPackage;
 
 import exceptionPackage.ConnectionException;
 import exceptionPackage.LoadReferenceDataException;
+import modelPackage.Address;
+import modelPackage.City;
 import modelPackage.InvitationToPay;
 import modelPackage.Person;
 import modelPackage.PersonRole;
@@ -228,6 +230,98 @@ public class ReferenceDBAccess implements ReferenceDataAccess {
             return generatedId;
         } catch (SQLException sqlException) {
             throw new LoadReferenceDataException("Unable to add the person role.", sqlException);
+        } catch (ConnectionException connectionException) {
+            throw new LoadReferenceDataException(
+                    "Impossible d'obtenir une connexion à la base de données.", connectionException);
+        }
+    }
+
+    @Override
+    public List<Address> getAllAddresses() throws LoadReferenceDataException {
+        List<Address> addresses = new ArrayList<>();
+        String sql = "SELECT a.AddressId, a.CityId, a.Street, a.Number, "
+                + "c.CityName, c.PostalCode "
+                + "FROM Address a INNER JOIN City c ON a.CityId = c.CityId "
+                + "ORDER BY c.CityName, a.Street, a.Number";
+        try {
+            Connection connection = SingletonConnection.getInstance();
+            PreparedStatement statement = connection.prepareStatement(sql);
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                Address address = new Address(
+                        resultSet.getInt("AddressId"),
+                        resultSet.getInt("CityId"),
+                        resultSet.getString("Street"),
+                        resultSet.getString("Number"));
+                City city = new City(
+                        resultSet.getInt("CityId"),
+                        resultSet.getString("CityName"),
+                        resultSet.getString("PostalCode"));
+                address.setCity(city);
+                addresses.add(address);
+            }
+            resultSet.close();
+            statement.close();
+            return addresses;
+        } catch (SQLException sqlException) {
+            throw new LoadReferenceDataException("Unable to load addresses.", sqlException);
+        } catch (ConnectionException connectionException) {
+            throw new LoadReferenceDataException(
+                    "Impossible d'obtenir une connexion à la base de données.", connectionException);
+        }
+    }
+
+    @Override
+    public int addAddress(Address address) throws LoadReferenceDataException {
+        String maxSql = "SELECT COALESCE(MAX(AddressId), 0) + 1 AS NextId FROM Address";
+        String insertSql = "INSERT INTO Address (AddressId, CityId, Street, Number) "
+                + "VALUES (?, ?, ?, ?)";
+        try {
+            Connection connection = SingletonConnection.getInstance();
+            PreparedStatement maxStatement = connection.prepareStatement(maxSql);
+            ResultSet keys = maxStatement.executeQuery();
+            int newId = 1;
+            if (keys.next()) {
+                newId = keys.getInt("NextId");
+            }
+            keys.close();
+            maxStatement.close();
+
+            PreparedStatement statement = connection.prepareStatement(insertSql);
+            statement.setInt(1, newId);
+            statement.setInt(2, address.getCityId());
+            statement.setString(3, address.getStreet());
+            statement.setString(4, address.getNumber());
+            statement.executeUpdate();
+            statement.close();
+            return newId;
+        } catch (SQLException sqlException) {
+            throw new LoadReferenceDataException("Unable to add the address.", sqlException);
+        } catch (ConnectionException connectionException) {
+            throw new LoadReferenceDataException(
+                    "Impossible d'obtenir une connexion à la base de données.", connectionException);
+        }
+    }
+
+    @Override
+    public List<City> getAllCities() throws LoadReferenceDataException {
+        List<City> cities = new ArrayList<>();
+        String sql = "SELECT CityId, CityName, PostalCode FROM City ORDER BY CityName";
+        try {
+            Connection connection = SingletonConnection.getInstance();
+            PreparedStatement statement = connection.prepareStatement(sql);
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                cities.add(new City(
+                        resultSet.getInt("CityId"),
+                        resultSet.getString("CityName"),
+                        resultSet.getString("PostalCode")));
+            }
+            resultSet.close();
+            statement.close();
+            return cities;
+        } catch (SQLException sqlException) {
+            throw new LoadReferenceDataException("Unable to load cities.", sqlException);
         } catch (ConnectionException connectionException) {
             throw new LoadReferenceDataException(
                     "Impossible d'obtenir une connexion à la base de données.", connectionException);

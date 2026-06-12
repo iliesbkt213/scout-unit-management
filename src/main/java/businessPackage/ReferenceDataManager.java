@@ -3,6 +3,8 @@ package businessPackage;
 import dataAccessPackage.ReferenceDBAccess;
 import dataAccessPackage.ReferenceDataAccess;
 import exceptionPackage.LoadReferenceDataException;
+import modelPackage.Address;
+import modelPackage.City;
 import modelPackage.InvitationToPay;
 import modelPackage.Person;
 import modelPackage.PersonRole;
@@ -73,5 +75,20 @@ public class ReferenceDataManager implements ReferenceDataBusiness {
             throw new LoadReferenceDataException("Le rôle de la personne ne peut pas être nul.");
         }
         return dao.addPersonRole(personRole);
+    }
+
+    public List<Address> getAllAddresses() throws LoadReferenceDataException {
+        return dao.getAllAddresses();
+    }
+
+    public int addAddress(Address address) throws LoadReferenceDataException {
+        if (address == null) {
+            throw new LoadReferenceDataException("L'adresse ne peut pas être nulle.");
+        }
+        return dao.addAddress(address);
+    }
+
+    public List<City> getAllCities() throws LoadReferenceDataException {
+        return dao.getAllCities();
     }
 }
