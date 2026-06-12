@@ -8,6 +8,8 @@ public class InscriptionDetail {
     private Integer inscriptionId;
     private String status;
     private Date registrationDate;
+    private Date preRegistrationDate;
+    private Date confirmationDate;
     private Boolean parentAuthorization;
     private Boolean medicalCertificate;
     private Boolean paymentFinish;
@@ -47,6 +49,22 @@ public class InscriptionDetail {
 
     public void setRegistrationDate(Date registrationDate) {
         this.registrationDate = registrationDate;
+    }
+
+    public Date getPreRegistrationDate() {
+        return preRegistrationDate;
+    }
+
+    public void setPreRegistrationDate(Date preRegistrationDate) {
+        this.preRegistrationDate = preRegistrationDate;
+    }
+
+    public Date getConfirmationDate() {
+        return confirmationDate;
+    }
+
+    public void setConfirmationDate(Date confirmationDate) {
+        this.confirmationDate = confirmationDate;
     }
 
     public Boolean getParentAuthorization() {

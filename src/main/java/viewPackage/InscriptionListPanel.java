@@ -55,8 +55,9 @@ public class InscriptionListPanel extends JPanel {
 
     private void buildTable() {
         tableModel = new DefaultTableModel(new String[]{
-                "Id", "Statut", "Date d'inscription", "Personne", "Rôle",
-                "Unité", "Ville", "Montant", "Aut. parent.", "Cert. méd.", "Payé"
+                "Id", "Statut", "Date d'inscription", "Date pré-inscription",
+                "Date confirmation", "Personne", "Rôle", "Unité", "Ville",
+                "Tuteur légal", "Montant", "Aut. parent.", "Cert. méd.", "Payé"
         }, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -130,10 +131,13 @@ public class InscriptionListPanel extends JPanel {
                         detail.getInscriptionId(),
                         detail.getStatus(),
                         detail.getRegistrationDate(),
+                        detail.getPreRegistrationDate(),
+                        detail.getConfirmationDate(),
                         detail.getFullName(),
                         detail.getRoleLabel(),
                         detail.getUnitName(),
                         detail.getPostalCode() + " " + detail.getCityName(),
+                        detail.getLegalGuardianName(),
                         detail.getAmount(),
                         detail.getParentAuthorization(),
                         detail.getMedicalCertificate(),

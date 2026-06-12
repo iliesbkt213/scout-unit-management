@@ -158,6 +158,7 @@ public class InscriptionDBAccess implements InscriptionDataAccess {
     public List<InscriptionDetail> getAllInscriptions() throws AllInscriptionsException {
         List<InscriptionDetail> details = new ArrayList<>();
         String sql = "SELECT i.Identifier, i.Status, i.RegistrationDate, "
+                + "i.PreRegistrationDate, i.ConfirmationDate, "
                 + "i.ParentAuthorization, i.MedicalCertificate, i.PaymentFinish, "
                 + "p.FirstName, p.LastName, p.Email, "
                 + "pr.RoleLabel, u.UnitName, c.CityName, c.PostalCode, "
@@ -244,6 +245,7 @@ public class InscriptionDBAccess implements InscriptionDataAccess {
         List<InscriptionDetail> details = new ArrayList<>();
         StringBuilder sql = new StringBuilder(
                 "SELECT i.Identifier, i.Status, i.RegistrationDate, "
+                + "i.PreRegistrationDate, i.ConfirmationDate, "
                 + "i.ParentAuthorization, i.MedicalCertificate, i.PaymentFinish, "
                 + "p.FirstName, p.LastName, p.Email, "
                 + "pr.RoleLabel, u.UnitName, c.CityName, c.PostalCode, "
@@ -298,6 +300,7 @@ public class InscriptionDBAccess implements InscriptionDataAccess {
         List<InscriptionDetail> details = new ArrayList<>();
         StringBuilder sql = new StringBuilder(
                 "SELECT i.Identifier, i.Status, i.RegistrationDate, "
+                + "i.PreRegistrationDate, i.ConfirmationDate, "
                 + "i.ParentAuthorization, i.MedicalCertificate, i.PaymentFinish, "
                 + "p.FirstName, p.LastName, p.Email, "
                 + "pr.RoleLabel, u.UnitName, c.CityName, c.PostalCode, "
@@ -349,6 +352,7 @@ public class InscriptionDBAccess implements InscriptionDataAccess {
         List<InscriptionDetail> details = new ArrayList<>();
         StringBuilder sql = new StringBuilder(
                 "SELECT i.Identifier, i.Status, i.RegistrationDate, "
+                + "i.PreRegistrationDate, i.ConfirmationDate, "
                 + "i.ParentAuthorization, i.MedicalCertificate, i.PaymentFinish, "
                 + "p.FirstName, p.LastName, p.Email, "
                 + "pr.RoleLabel, u.UnitName, c.CityName, c.PostalCode, "
@@ -442,6 +446,8 @@ public class InscriptionDBAccess implements InscriptionDataAccess {
         detail.setInscriptionId(resultSet.getInt("Identifier"));
         detail.setStatus(resultSet.getString("Status"));
         detail.setRegistrationDate(resultSet.getDate("RegistrationDate"));
+        detail.setPreRegistrationDate(resultSet.getDate("PreRegistrationDate"));
+        detail.setConfirmationDate(resultSet.getDate("ConfirmationDate"));
         detail.setParentAuthorization(resultSet.getBoolean("ParentAuthorization"));
         detail.setMedicalCertificate(resultSet.getBoolean("MedicalCertificate"));
         detail.setPaymentFinish(resultSet.getBoolean("PaymentFinish"));
