@@ -42,10 +42,7 @@ public class Person {
     }
 
     public void setPersonId(Integer personId) {
-        if (personId == null) {
-            throw new IllegalArgumentException("L'identifiant de la personne est obligatoire.");
-        }
-        if (personId <= 0) {
+        if (personId != null && personId <= 0) {
             throw new IllegalArgumentException("L'identifiant de la personne doit être positif.");
         }
         this.personId = personId;

@@ -138,4 +138,12 @@ public class ApplicationController {
     public int addInvitationToPay(InvitationToPay invitation) throws LoadReferenceDataException {
         return referenceDataManager.addInvitationToPay(invitation);
     }
+
+    public int addPerson(Person person) throws LoadReferenceDataException {
+        return referenceDataManager.addPerson(person);
+    }
+
+    public int addPersonRole(PersonRole personRole) throws LoadReferenceDataException {
+        return referenceDataManager.addPersonRole(personRole);
+    }
 }

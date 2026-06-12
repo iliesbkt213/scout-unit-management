@@ -166,6 +166,75 @@ public class ReferenceDBAccess implements ReferenceDataAccess {
     }
 
     @Override
+    public int addPerson(Person person) throws LoadReferenceDataException {
+        String maxSql = "SELECT COALESCE(MAX(PersonId), 0) + 1 AS NextId FROM Person";
+        String insertSql = "INSERT INTO Person (PersonId, AddressId, FirstName, LastName, "
+                + "Gender, BirthDate, Email, Phone) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        try {
+            Connection connection = SingletonConnection.getInstance();
+            PreparedStatement maxStatement = connection.prepareStatement(maxSql);
+            ResultSet keys = maxStatement.executeQuery();
+            int newId = 1;
+            if (keys.next()) {
+                newId = keys.getInt("NextId");
+            }
+            keys.close();
+            maxStatement.close();
+
+            PreparedStatement statement = connection.prepareStatement(insertSql);
+            statement.setInt(1, newId);
+            statement.setInt(2, person.getAddressId());
+            statement.setString(3, person.getFirstName());
+            statement.setString(4, person.getLastName());
+            statement.setString(5, person.getGender());
+            statement.setDate(6, person.getBirthDate());
+            statement.setString(7, person.getEmail());
+            statement.setString(8, person.getPhone());
+            statement.executeUpdate();
+            statement.close();
+            return newId;
+        } catch (SQLException sqlException) {
+            throw new LoadReferenceDataException("Unable to add the person.", sqlException);
+        } catch (ConnectionException connectionException) {
+            throw new LoadReferenceDataException(
+                    "Impossible d'obtenir une connexion à la base de données.", connectionException);
+        }
+    }
+
+    @Override
+    public int addPersonRole(PersonRole personRole) throws LoadReferenceDataException {
+        String sql = "INSERT INTO PersonRole (PersonId, RoleLabel, StartDate, EndDate) "
+                + "VALUES (?, ?, ?, ?)";
+        try {
+            Connection connection = SingletonConnection.getInstance();
+            PreparedStatement statement = connection.prepareStatement(
+                    sql, Statement.RETURN_GENERATED_KEYS);
+            statement.setInt(1, personRole.getPersonId());
+            statement.setString(2, personRole.getRoleLabel());
+            statement.setDate(3, personRole.getStartDate());
+            if (personRole.getEndDate() != null) {
+                statement.setDate(4, personRole.getEndDate());
+            } else {
+                statement.setNull(4, java.sql.Types.DATE);
+            }
+            statement.executeUpdate();
+            ResultSet keys = statement.getGeneratedKeys();
+            int generatedId = -1;
+            if (keys.next()) {
+                generatedId = keys.getInt(1);
+            }
+            keys.close();
+            statement.close();
+            return generatedId;
+        } catch (SQLException sqlException) {
+            throw new LoadReferenceDataException("Unable to add the person role.", sqlException);
+        } catch (ConnectionException connectionException) {
+            throw new LoadReferenceDataException(
+                    "Impossible d'obtenir une connexion à la base de données.", connectionException);
+        }
+    }
+
+    @Override
     public int addInvitationToPay(InvitationToPay invitation) throws LoadReferenceDataException {
         String sql = "INSERT INTO InvitationToPay (Amount, SendingDate, Communication) "
                 + "VALUES (?, ?, ?)";

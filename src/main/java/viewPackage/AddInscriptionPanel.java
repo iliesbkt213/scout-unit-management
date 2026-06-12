@@ -137,13 +137,36 @@ public class AddInscriptionPanel extends JPanel {
         JPanel footer = new JPanel(new FlowLayout(FlowLayout.LEFT));
         JButton addButton = new JButton("Ajouter");
         JButton clearButton = new JButton("Réinitialiser");
+        JButton newPersonButton = new JButton("Nouvelle personne...");
         addButton.addActionListener(e -> handleAdd());
         clearButton.addActionListener(e -> clearForm());
+        newPersonButton.addActionListener(e -> handleNewPerson());
         statusLabel = new JLabel(" ");
         footer.add(addButton);
         footer.add(clearButton);
+        footer.add(newPersonButton);
         footer.add(statusLabel);
         add(footer, BorderLayout.SOUTH);
+    }
+
+    private void handleNewPerson() {
+        java.awt.Window owner = javax.swing.SwingUtilities.getWindowAncestor(this);
+        NewPersonDialog dialog = new NewPersonDialog(owner, controller);
+        dialog.setVisible(true);
+        if (dialog.isCreated()) {
+            reloadReferenceData();
+            Integer newPersonRoleId = dialog.getCreatedPersonRoleId();
+            if (newPersonRoleId != null) {
+                for (int i = 0; i < personRoleCombo.getItemCount(); i++) {
+                    PersonRole pr = personRoleCombo.getItemAt(i);
+                    if (pr != null && newPersonRoleId.equals(pr.getIdentifier())) {
+                        personRoleCombo.setSelectedIndex(i);
+                        break;
+                    }
+                }
+            }
+            statusLabel.setText("Nouvelle personne créée et sélectionnée.");
+        }
     }
 
     private void addRow(JPanel form, GridBagConstraints constraints, int row,

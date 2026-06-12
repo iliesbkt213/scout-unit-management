@@ -22,4 +22,8 @@ public interface ReferenceDataBusiness {
     List<Role> getAllRoles() throws LoadReferenceDataException;
 
     int addInvitationToPay(InvitationToPay invitation) throws LoadReferenceDataException;
+
+    int addPerson(Person person) throws LoadReferenceDataException;
+
+    int addPersonRole(PersonRole personRole) throws LoadReferenceDataException;
 }

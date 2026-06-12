@@ -60,4 +60,18 @@ public class ReferenceDataManager implements ReferenceDataBusiness {
         }
         return dao.addInvitationToPay(invitation);
     }
+
+    public int addPerson(Person person) throws LoadReferenceDataException {
+        if (person == null) {
+            throw new LoadReferenceDataException("La personne ne peut pas être nulle.");
+        }
+        return dao.addPerson(person);
+    }
+
+    public int addPersonRole(PersonRole personRole) throws LoadReferenceDataException {
+        if (personRole == null) {
+            throw new LoadReferenceDataException("Le rôle de la personne ne peut pas être nul.");
+        }
+        return dao.addPersonRole(personRole);
+    }
 }
