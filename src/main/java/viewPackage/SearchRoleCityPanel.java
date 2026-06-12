@@ -3,6 +3,7 @@ package viewPackage;
 import controllerPackage.ApplicationController;
 import exceptionPackage.LoadReferenceDataException;
 import exceptionPackage.SearchInscriptionException;
+import modelPackage.City;
 import modelPackage.InscriptionDetail;
 import modelPackage.InscriptionSearchCriteria;
 import modelPackage.Role;
@@ -14,7 +15,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableModel;
 import java.awt.BorderLayout;
@@ -28,7 +28,7 @@ public class SearchRoleCityPanel extends JPanel {
 
     private ApplicationController controller;
     private JComboBox<Role> roleCombo;
-    private JTextField cityField;
+    private JComboBox<City> cityCombo;
     private DefaultTableModel tableModel;
     private JLabel statusLabel;
 
@@ -67,7 +67,7 @@ public class SearchRoleCityPanel extends JPanel {
         constraints.fill = GridBagConstraints.HORIZONTAL;
 
         roleCombo = new JComboBox<>();
-        cityField = new JTextField(15);
+        cityCombo = new JComboBox<>();
         JButton searchButton = new JButton("Rechercher");
         searchButton.addActionListener(e -> handleSearch());
 
@@ -80,7 +80,7 @@ public class SearchRoleCityPanel extends JPanel {
         constraints.gridx = 2;
         criteria.add(new JLabel("Ville :"), constraints);
         constraints.gridx = 3;
-        criteria.add(cityField, constraints);
+        criteria.add(cityCombo, constraints);
 
         constraints.gridx = 4;
         criteria.add(searchButton, constraints);
@@ -114,6 +114,11 @@ public class SearchRoleCityPanel extends JPanel {
             for (Role role : controller.getAllRoles()) {
                 roleCombo.addItem(role);
             }
+            cityCombo.removeAllItems();
+            cityCombo.addItem(null);
+            for (City city : controller.getAllCities()) {
+                cityCombo.addItem(city);
+            }
         } catch (LoadReferenceDataException exception) {
             JOptionPane.showMessageDialog(this,
                     exception.getMessage(),
@@ -129,9 +134,9 @@ public class SearchRoleCityPanel extends JPanel {
             if (selectedRole != null) {
                 criteria.setRoleLabel(selectedRole.getLabel());
             }
-            String city = cityField.getText();
-            if (city != null && !city.trim().isEmpty()) {
-                criteria.setCityName(city.trim());
+            City selectedCity = (City) cityCombo.getSelectedItem();
+            if (selectedCity != null) {
+                criteria.setCityName(selectedCity.getCityName());
             }
             List<InscriptionDetail> results = controller.searchInscriptionsByRoleAndCity(criteria);
             tableModel.setRowCount(0);
